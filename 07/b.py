@@ -13,11 +13,8 @@ scores = [(1, 1, 1, 1, 1), (1, 1, 1, 2), (1, 2, 2), (1, 1, 3), (2, 3), (1, 4), (
 
 def get_signature(hand: str) -> dict:
     count = {}
-    for card in hand:
-        if card in count:
-            count[card] += 1
-        else:
-            count[card] = 1
+    for label in hand:
+        count[label] = count[label] + 1 if label in count else 1
 
     if len(count.values()) == 1:
         return (5,)
@@ -32,19 +29,12 @@ def get_score(h):
 
 
 def compare(p1, p2):
-    if p1["score"] > p2["score"]:
-        return 1
+    if p1["score"] - p2["score"] != 0:
+        return p1["score"] - p2["score"]
 
-    if p1["score"] < p2["score"]:
-        return -1
-
-    h1, h2 = [p["hand"] for p in [p1, p2]]
-    for c1, c2 in zip(h1, h2):
-        if values[c1] > values[c2]:
-            return 1
-
-        if values[c1] < values[c2]:
-            return -1
+    for c1, c2 in zip(p1["hand"], p2["hand"]):
+        if values[c1] - values[c2]:
+            return values[c1] - values[c2]
 
 
 def solve():
@@ -54,11 +44,8 @@ def solve():
     ]
 
     players = sorted(players, key=cmp_to_key(compare))
-
-    answer = sum((i + 1) * p["bid"] for i, p in enumerate(players))
-
-    print(answer)
+    return sum((i + 1) * p["bid"] for i, p in enumerate(players))
 
 
 if __name__ == "__main__":
-    solve()
+    print(solve())

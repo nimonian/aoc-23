@@ -11,10 +11,10 @@ scores = [(1, 1, 1, 1, 1), (1, 1, 1, 2), (1, 2, 2), (1, 1, 3), (2, 3), (1, 4), (
 
 
 def get_signature(hand: str) -> dict:
-    f = {}
+    count = {}
     for label in hand:
-        f[label] = f[label] + 1 if label in f else 1
-    return tuple(sorted(f.values()))
+        count[label] = count[label] + 1 if label in count else 1
+    return tuple(sorted(count.values()))
 
 
 def get_score(h):
