@@ -3,11 +3,7 @@ from functools import cmp_to_key
 
 input = Path(__file__).parent / "input.txt"
 lines = [line.split(" ") for line in input.read_text().split("\n")]
-
-values = {str(k): k for k in range(2, 10)}
-values.update({k: 10 + i for i, k in enumerate("TJQKA")})
-values["J"] = 1
-
+values = {x: i for i, x in enumerate("J123456789TQKA")}
 scores = [(1, 1, 1, 1, 1), (1, 1, 1, 2), (1, 2, 2), (1, 1, 3), (2, 3), (1, 4), (5,)]
 
 
