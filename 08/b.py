@@ -1,7 +1,7 @@
 from time import time
 from pathlib import Path
 import re
-from math import gcd
+from math import lcm
 from functools import reduce
 
 then = time()
@@ -16,12 +16,8 @@ nodes = lines[1].split("\n")
 nodes = [re.findall(r"([A-Z]+)", node) for node in nodes]
 nodes = {node[0]: (node[1], node[2]) for node in nodes}
 
-lcm = lambda x, y: x * y // gcd(x, y)
-lcm_list = lambda nums: reduce(lcm, nums)
-
 locs = [loc for loc in nodes.keys() if loc[-1] == "A"]
 results = []
-
 
 for loc in locs:
     count = 0
@@ -31,5 +27,5 @@ for loc in locs:
         count += 1
     results.append(count)
 
-print(lcm_list(results))
+print(reduce(lcm, results))
 print(time() - then, "s")
