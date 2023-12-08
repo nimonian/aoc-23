@@ -4,15 +4,13 @@ with open("./input.txt") as f:
     seeds, *almanac = f.read().split("\n\n")
 
 seeds = [int(s) for s in re.findall(r"(\d+)", seeds)]
-maps = []
 
 
 def add_identities(map):
     map = sorted(map, key=lambda f: f["start"])
-    zero = [
-        {"start": float("-inf"), "end": map[0]["start"] - 1, "add": 0},
-        {"start": map[-1]["end"], "end": float("inf"), "add": 0},
-    ]
+    from_infinity = {"start": float("-inf"), "end": map[0]["start"] - 1, "add": 0}
+    to_infinity = {"start": map[-1]["end"], "end": float("inf"), "add": 0}
+    zero = [from_infinity, to_infinity]
     for i in range(1, len(map) - 1):
         end, start = map[i]["end"], map[i + 1]["start"]
         if start - end > 1:
@@ -21,6 +19,7 @@ def add_identities(map):
 
 
 def solve():
+    maps = []
     for map in almanac:
         map = map.strip().split("\n")[1:]
         map = [[int(s) for s in re.findall(r"(\d+)", line)] for line in map]
@@ -43,12 +42,9 @@ def solve():
             ]
 
             for f in F:
-                mapped.append(
-                    {
-                        "start": max(batch["start"], f["start"]) + f["add"],
-                        "end": min(batch["end"], f["end"]) + f["add"],
-                    }
-                )
+                start = max(batch["start"], f["start"]) + f["add"]
+                end = min(batch["end"], f["end"]) + f["add"]
+                mapped.append({"start": start, "end": end})
 
         batches = mapped
 
