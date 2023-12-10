@@ -4,7 +4,7 @@ from sympy import Matrix
 path = Path(__file__).parent / "input.txt"
 lines = path.read_text().split("\n")
 
-answer = 0
+a, b = 0, 0
 
 for line in lines:
     sample = [int(d) for d in line.split(" ")]
@@ -16,7 +16,9 @@ for line in lines:
 
     A = Matrix([[x**k for k in range(n)] for x in range(n)])
     B, v = A.inv(), Matrix(sample[:n])
+    f = lambda x: sum(c * x**i for i, c in enumerate(B * v))
 
-    answer += sum([c * (-1) ** i for i, c in enumerate(B * v)])
+    a += f(len(sample))
+    b += f(-1)
 
-print(answer, "\n")
+print(a, b)
