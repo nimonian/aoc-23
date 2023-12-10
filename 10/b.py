@@ -51,10 +51,6 @@ for dr, dc in steps:
     b = 1  # count boundary points
 
     while M[r][c] != "S":
-        b += 1
-        if M[r][c] in bends:
-            V.append((r, c))
-
         if not -1 < r < len(M) and -1 < c < len(M[r]):
             break  # out of bounds
 
@@ -64,6 +60,10 @@ for dr, dc in steps:
         pipe = pipes[M[r][c]]
         if not (dr, dc) in pipe:
             break  # pipes don't join up
+
+        b += 1
+        if M[r][c] in bends:
+            V.append((r, c))
 
         dr, dc = pipe[(dr, dc)]
         r, c = r + dr, c + dc

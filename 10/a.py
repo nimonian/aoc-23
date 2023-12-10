@@ -35,8 +35,6 @@ for dr, dc in steps:
     l = 1  # the length of the path
 
     while M[r][c] != "S":
-        l += 1
-
         if not -1 < r < len(M) and -1 < c < len(M[r]):
             break  # out of bounds
 
@@ -47,6 +45,7 @@ for dr, dc in steps:
         if not (dr, dc) in pipe:
             break  # pipes don't join up
 
+        l += 1
         dr, dc = pipe[(dr, dc)]
         r, c = r + dr, c + dc
 
