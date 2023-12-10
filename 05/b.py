@@ -1,55 +1,61 @@
 import re
 
+
+class Batch:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+
+
+class Func(Batch):
+    def __init__(self, start, end, add=0):
+        super().__init__(start, end)
+        self.add = add
+
+
+def get_identities(map):
+    map = sorted(map, key=lambda f: f.start)
+
+    from_neg_inf = Func(float("-inf"), map[0].start - 1)
+    to_pos_inf = Func(map[-1].end + 1, float("inf"))
+
+    identities = [from_neg_inf, to_pos_inf]
+
+    for i in range(1, len(map) - 1):
+        end, start = map[i].end, map[i + 1].start
+
+        if start - end > 1:
+            identities.append(Func(start, end))
+
+    return identities
+
+
 with open("./input.txt") as f:
     seeds, *almanac = f.read().split("\n\n")
 
 seeds = [int(s) for s in re.findall(r"(\d+)", seeds)]
 
+maps = []
 
-def add_identities(map):
-    map = sorted(map, key=lambda f: f["start"])
-    from_infinity = {"start": float("-inf"), "end": map[0]["start"] - 1, "add": 0}
-    to_infinity = {"start": map[-1]["end"], "end": float("inf"), "add": 0}
-    zero = [from_infinity, to_infinity]
-    for i in range(1, len(map) - 1):
-        end, start = map[i]["end"], map[i + 1]["start"]
-        if start - end > 1:
-            zero.append({"start": end + 1, "end": start - 1, "add": 0})
-    return zero
+for map in almanac:
+    map = map.strip().split("\n")[1:]
+    map = [[int(s) for s in re.findall(r"(\d+)", line)] for line in map]
+    map = [Func(x, x + r - 1, y - x) for y, x, r in map]
+    maps.append(map + get_identities(map))
 
+batches = [Batch(s, s + r) for s, r in zip(seeds[::2], seeds[1::2])]
 
-def solve():
-    maps = []
-    for map in almanac:
-        map = map.strip().split("\n")[1:]
-        map = [[int(s) for s in re.findall(r"(\d+)", line)] for line in map]
-        map = [{"start": x, "end": x + r - 1, "add": y - x} for y, x, r in map]
-        maps.append(map + add_identities(map))
+for map in maps:
+    mapped = []
 
-    batches = [
-        {"start": seeds[i], "end": seeds[i] + seeds[i + 1]}
-        for i in range(0, len(seeds), 2)
-    ]
+    for batch in batches:
+        F = [f for f in map if f.start <= batch.end and f.end >= batch.start]
 
-    for map in maps:
-        mapped = []
+        for f in F:
+            start = max(batch.start, f.start) + f.add
+            end = min(batch.end, f.end) + f.add
+            mapped.append(Batch(start, end))
 
-        for batch in batches:
-            F = [
-                f
-                for f in map
-                if f["start"] <= batch["end"] and f["end"] >= batch["start"]
-            ]
+    batches = mapped
 
-            for f in F:
-                start = max(batch["start"], f["start"]) + f["add"]
-                end = min(batch["end"], f["end"]) + f["add"]
-                mapped.append({"start": start, "end": end})
-
-        batches = mapped
-
-    return min(batch["start"] for batch in batches)
-
-
-if __name__ == "__main__":
-    print(solve())
+print(min(batch.start for batch in batches))
