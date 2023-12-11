@@ -82,4 +82,4 @@ def solve(path: str):
 
 
 if __name__ == "__main__":
-    print(solve("./b.txt"))
+    print(solve("./input.txt"))

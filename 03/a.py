@@ -50,4 +50,4 @@ def solve(path: str) -> int:
 
 
 if __name__ == "__main__":
-    print(solve("./a.txt"))
+    print(solve("./input.txt"))

@@ -6,7 +6,7 @@ then = time()
 file = Path(__file__).parent / "input.txt"
 lines = file.read_text().split("\n")
 
-# up, down, right, left
+# down, up, right, left
 steps = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
 # (from): (to)
