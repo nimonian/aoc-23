@@ -6,11 +6,17 @@ class Batch:
         self.start = start
         self.end = end
 
+    def overlaps(self, other):
+        return self.start <= other.end and self.end >= other.start
+
 
 class Func(Batch):
     def __init__(self, start, end, add=0):
         super().__init__(start, end)
         self.add = add
+
+    def apply(self, x):
+        return x + self.add
 
 
 def get_identities(map):
@@ -49,11 +55,11 @@ for map in maps:
     mapped = []
 
     for batch in batches:
-        F = [f for f in map if f.start <= batch.end and f.end >= batch.start]
+        funcs = [f for f in map if f.overlaps(batch)]
 
-        for f in F:
-            start = max(batch.start, f.start) + f.add
-            end = min(batch.end, f.end) + f.add
+        for f in funcs:
+            start = f.apply(max(batch.start, f.start))
+            end = f.apply(min(batch.end, f.end))
             mapped.append(Batch(start, end))
 
     batches = mapped
