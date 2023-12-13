@@ -1,5 +1,8 @@
 from pathlib import Path
 from sympy import Matrix
+from time import time
+
+then = time()
 
 path = Path(__file__).parent / "input.txt"
 lines = path.read_text().split("\n")
@@ -22,3 +25,4 @@ for line in lines:
     b += f(-1)
 
 print(a, b)
+print(time() - then, "s")

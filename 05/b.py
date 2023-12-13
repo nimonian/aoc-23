@@ -6,8 +6,8 @@ class Batch:
         self.start = start
         self.end = end
 
-    def overlaps(self, other):
-        return self.start <= other.end and self.end >= other.start
+    def overlaps(self, batch):
+        return self.start <= batch.end and self.end >= batch.start
 
 
 class Func(Batch):
