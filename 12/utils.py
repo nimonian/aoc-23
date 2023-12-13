@@ -1,22 +1,37 @@
-from functools import cache
+import re
 
 
-@cache
-def get_tilings(n, tiles):
-    tilings = []
+def is_consistent(s, nums):
+    matches = [len(match) for match in re.findall(r"\#+", s)]
 
-    if len(tiles) == 1:
-        for i in range(n - tiles[0] + 1):
-            tilings.append([i])
+    if any(x > y for x, y in zip(matches, nums)):
+        return False
 
-    else:
-        for i in range(sum(tiles[:-1]), n - tiles[-1] + 1):
-            tilings += [tiling + [i] for tiling in get_tilings(i, tiles[:-1])]
+    if any(x != y for x, y in zip(matches[:-1], nums[:-1])):
+        return False
 
-    return tilings
+    if sum(matches) > sum(nums):
+        return False
+
+    return True
 
 
-def overwrite(A, B, k):
-    for i, b in enumerate(B):
-        A[k + i] = b
-    return A
+def is_matching(s, nums):
+    matches = [len(match) for match in re.findall(r"\#+", s)]
+    return matches == nums
+
+
+def count_arrangements(s, nums):
+    nodes = [""]
+
+    for char in s:
+        if char in ".#":
+            nodes = [n + char for n in nodes]
+        else:
+            nodes = [n + "#" for n in nodes] + [n + "." for n in nodes]
+        nodes = [n for n in nodes if is_consistent(n, nums)]
+        print(nodes)
+
+    nodes = [n for n in nodes if is_matching(n, nums)]
+
+    return len(nodes)
