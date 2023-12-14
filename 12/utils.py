@@ -30,7 +30,6 @@ def count_arrangements(s, nums):
         else:
             nodes = [n + "#" for n in nodes] + [n + "." for n in nodes]
         nodes = [n for n in nodes if is_consistent(n, nums)]
-        print(nodes)
 
     nodes = [n for n in nodes if is_matching(n, nums)]
 
