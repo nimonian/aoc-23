@@ -1,35 +1,29 @@
-def rotate(M):
-    h, w = len(M), len(M[0])
-    return [[M[h - 1 - c][r] for c in range(h)] for r in range(w)]
+def rotate(M, n=1):
+    for _ in range(n):
+        M = list(zip(*M[::-1]))
+    return M
 
 
 def tilt(M):
     for r, row in enumerate(M):
         _row = []
-        count = 0
-        i = -1
 
-        j = 0
+        count, i, j = 0, -1, 0
         while j < len(row):
             if row[j] == "#":
-                _row += ["O"] * count
-                _row += ["."] * (j - i - 1 - count)
-                _row.append("#")
-                i = j
-                count = 0
+                _row += list("O" * count + "." * (j - i - 1 - count) + "#")
+                count, i = 0, j
 
             if row[j] == "O":
                 count += 1
 
             j += 1
 
-        _row += ["O"] * count
-        _row += ["."] * (j - i - 1 - count)
-        M[r] = _row
+        M[r] = _row + list("O" * count + "." * (j - i - 1 - count))
     return M
 
 
-def calculate_load(dish):
+def load(dish):
     load = 0
     for r, row in enumerate(dish):
         for char in row:
@@ -37,9 +31,3 @@ def calculate_load(dish):
                 load += len(dish) - r
 
     return load
-
-
-def pretty_print(dish):
-    for row in dish:
-        print("".join(row))
-    print()

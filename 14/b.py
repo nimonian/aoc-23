@@ -1,43 +1,38 @@
-# 102347 too high
 from pathlib import Path
 from time import time
-from utils import rotate, tilt, calculate_load
-
+from utils import rotate, tilt, load
 
 path = Path(__file__).parent / "input.txt"
 dish = path.read_text().splitlines()
-dish = [list(row) for row in dish]
 cycles = 10**9
-
 then = time()
 
 
 def cycle(dish):
     for _ in range(4):
-        dish = rotate(dish)
-        dish = tilt(dish)
+        dish = tilt(rotate(dish))
     return dish
 
 
 # get N on the bottom
-dish = rotate(rotate(dish))
+dish = rotate(dish, 2)
 
-# find cycle
-slow = cycle(dish)
-fast = cycle(slow)
+# floyd cycle detection
+dish = cycle(dish)
+fast = cycle(dish)
 
 i = 1
-while fast != slow:
-    slow = cycle(slow)
+while fast != dish:
+    dish = cycle(dish)
     fast = cycle(cycle(fast))
     i += 1
 
-# find cycles mod period
 r = cycles % i
 
 for _ in range(r):
-    slow = cycle(slow)
+    dish = cycle(dish)
 
-slow = rotate(rotate(slow))
-print(calculate_load(slow))
+dish = rotate(dish, 2)
+print(load(dish))
+
 print(time() - then, "s")
